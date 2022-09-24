@@ -49,7 +49,7 @@ Implementation Modules
 - [x] Implement a Python script `search_price.py` that takes a range of price and outputs IDs of cars in the range using Firebase API. (Experimental)
 - [x] Write a Python script `create_index.py` that creates a keyword index for keywords appearing in car name using REST API. (Experimental)
 - [x] Implement a Python script `search_car.py` that finds IDs of cars using a list of keywords on car names using REST API. (Experimental)
-- [x] Explore `Hadoop DFS` structure and commands using AWS EC2 Instance and store file structure in XML file (Experimental)
+- [x] Explore `Hadoop DFS` structure and commands using AWS EC2 Instance and store file structure in XML file. (Experimental)
 
 
 
