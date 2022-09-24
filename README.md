@@ -36,7 +36,20 @@ Implementation Modules
 | Develop a web application for searching and analyzing the data stored in EDFS 	            |  30 Nov 2022 	        |             	|
 
 
+## Datasets Used
 
+1. [S&P 500 Stock Data](https://www.kaggle.com/datasets/camnugent/sandp500) 
+2. [Financial Indicators Dataset](https://www.kaggle.com/code/cnic92/explore-and-clean-financial-indicators-dataset/data ) 
+3. [International Financial Statistics](https://www.kaggle.com/datasets/unitednations/international-financial-statistics?resource=download)
+
+
+## Current Progress
+
+- [x] Create a Python script `load.py` that takes the CSV file cars.csv and loads it to Firebase real time database use Pandas. (Experimental)
+- [x] Implement a Python script `search_price.py` that takes a range of price and outputs IDs of cars in the range using Firebase API. (Experimental)
+- [x] Write a Python script `create_index.py` that creates a keyword index for keywords appearing in car name using REST API. (Experimental)
+- [x] Implement a Python script `search_car.py` that finds IDs of cars using a list of keywords on car names using REST API. (Experimental)
+- [x] Explore `Hadoop DFS` structure and commands using AWS EC2 Instance and store file structure in XML file (Experimental)
 
 
 
