@@ -50,6 +50,8 @@ Implementation Modules
 - [x] Write a Python script `create_index.py` that creates a keyword index for keywords appearing in car name using REST API. (Experimental)
 - [x] Implement a Python script `search_car.py` that finds IDs of cars using a list of keywords on car names using REST API. (Experimental)
 - [x] Explore `Hadoop DFS` structure and commands using AWS EC2 Instance and store file structure in XML file. (Experimental)
+- [x] Write template Map Reduce programs `mapper.py` and `reducer.py` for counting words in a document. (Experimental)
+- [x] Write XML to TSV Python script for understanding `Hadoop File System image` stored in XML format and its traversal. (Experimental)
 
 
 
