@@ -30,7 +30,7 @@ Implementation Modules
 
 |                                      Task                                     	            |     Target Date     	|    Status   	|
 |:--------------------------------------------------------------------------------------     	|:-------------------:	|:-----------:	|
-| MySQL and MongoDB based emulation of EDFS                                     	            |  15 Oct 2022 	        | In Progress 	|
+| MySQL and MongoDB based emulation of EDFS                                     	            |  15 Oct 2022 	        | Completed 	|
 | Implement partition based map and reduce on the data stored in EDFS           	            |  30 Oct 2022 	        |             	|
 | Implement Search and Analytics functions on said datasets                     	            |  15 Nov 2022 	        |             	|
 | Develop a web application for searching and analyzing the data stored in EDFS 	            |  30 Nov 2022 	        |             	|
