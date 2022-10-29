@@ -63,6 +63,6 @@ class MongoMetadata:
 # post = {"root":{}}
 
 metadata = MongoMetadata()
-metadata.mkdir("/home/rishil")
+metadata.mkdir("/home/shreeram")
 
 # print(post_id)
