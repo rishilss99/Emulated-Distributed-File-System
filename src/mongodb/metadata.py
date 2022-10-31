@@ -40,6 +40,17 @@ class MongoMetadata:
         if path[0] != '/':
             print("Require absolute path starting from root")
             return
+        path_list = path.split("/")
+        doc = self.collection.find({"root": {'$exists': 1}})
+        head_itr = doc[0]['root']
+        for dir in path_list[1:-2:1]:
+            if dir not in head_itr:
+                return "Invalid path"
+            head_itr = head_itr[dir]
+        if path_list[-1] == '':
+            print(list(head_itr.keys()))
+        else:
+            print(list(head_itr[path_list[-1]].keys()))
 
     def cat(self, path):
 
@@ -63,6 +74,6 @@ class MongoMetadata:
 # post = {"root":{}}
 
 metadata = MongoMetadata()
-metadata.mkdir("/home/shreeram")
+metadata.ls("/home")
 
 # print(post_id)
