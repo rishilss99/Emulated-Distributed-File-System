@@ -34,6 +34,7 @@ class MongoMetadata:
             head_itr = head_itr[dir]
         self.collection.update_one({"root": {'$exists': 1}}, {
                                    "$set": {"root": prev_val}})
+        return [""]
 
     def ls(self, path):
 
@@ -48,9 +49,11 @@ class MongoMetadata:
                 return "Invalid path"
             head_itr = head_itr[dir]
         if path_list[-1] == '':
-            print(list(head_itr.keys()))
+            # print(list(head_itr.keys()))
+            return list(head_itr.keys())
         else:
-            print(list(head_itr[path_list[-1]].keys()))
+            # print(list(head_itr[path_list[-1]].keys()))
+            return list(head_itr[path_list[-1]].keys())
 
     def cat(self, path):
 
@@ -74,6 +77,6 @@ class MongoMetadata:
 # post = {"root":{}}
 
 metadata = MongoMetadata()
-metadata.ls("/home")
-
+a = metadata.ls("/root/usr/home/")
+print(a)
 # print(post_id)
