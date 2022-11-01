@@ -12,7 +12,9 @@ ACCEPTED_COMMANDS = ['mkdir', 'ls', 'rm', 'put', 'cat', 'rmdir']
 metadata = MongoMetadata()
 
 COMMAND_DICT = {"mkdir" : metadata.mkdir,
-                "ls" : metadata.ls}
+                "ls" : metadata.ls,
+                "rm" : metadata.rm,
+                "cat" : metadata.cat}
 
 @app.route('/', methods =["GET", "POST"])
 def enter_commands():
@@ -22,9 +24,10 @@ def enter_commands():
         commands_split = command.split(" ")
         data = COMMAND_DICT.get(commands_split[0])(commands_split[1])
         if data is None:
-            data = "Not supported command"
+            data = ["Not supported command"]
         elif type(data) != list:
-            data = "Something went wrong"
+            # data = ["Something went wrong"]
+            print(data)
         return {'response': data}
 
     return render_template("terminal.html")

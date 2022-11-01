@@ -1,7 +1,5 @@
 from importlib.metadata import metadata
 from pymongo import MongoClient
-import pprint
-import datetime
 
 """An important consideration when working with the file system functions of this EDFS
     is that they require absolute path much like the Hadoop DFS"""
@@ -33,6 +31,7 @@ class MongoMetadata:
             head_itr = head_itr[dir]
         self.collection.update_one({"root": {'$exists': 1}}, {
                                    "$set": {"root": prev_val}})
+        return ["Success"]
 
     def ls(self, path):
 
@@ -67,7 +66,7 @@ class MongoMetadata:
             return "File does not exist"
         else:
             f = open(path_list[-1])
-            return f.read()
+            return list(f.read())
 
     def rm(self, path):
 
@@ -87,6 +86,7 @@ class MongoMetadata:
             del head_itr[path_list[-1]]
             self.collection.update_one({"root": {'$exists': 1}}, {
                 "$set": {"root": prev_val}})
+            return ["Success"]
 
 
 # post = {"root":{}}

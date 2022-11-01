@@ -28,6 +28,18 @@
             doRequest(url, command).then(data => {
                 this.echo(data);
             });
+        },
+        rm: function(cmdInput) {
+            let command = "rm " + cmdInput;
+            doRequest(url, command).then(data => {
+                this.echo(data);
+            });
+        },
+        cat: function(cmdInput) {
+            let command = "cat " + cmdInput;
+            doRequest(url, command).then(data => {
+                this.echo(data);
+            });
         }
     }, {
         greetings: 'My Flask Terminal'
