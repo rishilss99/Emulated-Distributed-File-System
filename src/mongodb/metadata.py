@@ -22,8 +22,7 @@ class MongoMetadata:
     def mkdir(self, path):
 
         if path[0] != '/':
-            print("Require absolute path starting from root")
-            return
+            return "Require absolute path starting from root"
         path_list = path.split("/")
         doc = self.collection.find({"root": {'$exists': 1}})
         head_itr = doc[0]['root']
@@ -34,49 +33,64 @@ class MongoMetadata:
             head_itr = head_itr[dir]
         self.collection.update_one({"root": {'$exists': 1}}, {
                                    "$set": {"root": prev_val}})
-        return [""]
 
     def ls(self, path):
 
         if path[0] != '/':
-            print("Require absolute path starting from root")
-            return
+            return "Require absolute path starting from root"
         path_list = path.split("/")
         doc = self.collection.find({"root": {'$exists': 1}})
         head_itr = doc[0]['root']
-        for dir in path_list[1:-2:1]:
-            if dir not in head_itr:
-                return "Invalid path"
-            head_itr = head_itr[dir]
         if path_list[-1] == '':
-            # print(list(head_itr.keys()))
             return list(head_itr.keys())
         else:
-            # print(list(head_itr[path_list[-1]].keys()))
-            return list(head_itr[path_list[-1]].keys())
+            for dir in path_list[1:]:
+                if dir not in head_itr:
+                    return "Invalid path"
+                head_itr = head_itr[dir]
+            return list(head_itr.keys())
 
     def cat(self, path):
 
         if path[0] != '/':
-            print("Require absolute path starting from root")
-            return
-
-    def rmdir(self, path):
-
-        if path[0] != '/':
-            print("Require absolute path starting from root")
-            return
+            return "Require absolute path starting from root"
+        path_list = path.split("/")
+        if path_list[-1][-3:] != "csv":
+            return "Invalid file type: Only .csv files allowed"
+        doc = self.collection.find({"root": {'$exists': 1}})
+        head_itr = doc[0]['root']
+        for dir in path_list[1:-1:1]:
+            if dir not in head_itr:
+                return "Invalid file path"
+            head_itr = head_itr[dir]
+        if path_list[-1] not in head_itr.keys():
+            return "File does not exist"
+        else:
+            f = open(path_list[-1])
+            return f.read()
 
     def rm(self, path):
 
         if path[0] != '/':
-            print("Require absolute path starting from root")
-            return
+            return "Require absolute path starting from root"
+        path_list = path.split("/")
+        doc = self.collection.find({"root": {'$exists': 1}})
+        head_itr = doc[0]['root']
+        prev_val = head_itr
+        for dir in path_list[1:-1:1]:
+            if dir not in head_itr:
+                return "Invalid path"
+            head_itr = head_itr[dir]
+        if path_list[-1] not in head_itr.keys():
+            return "File does not exist"
+        else:
+            del head_itr[path_list[-1]]
+            self.collection.update_one({"root": {'$exists': 1}}, {
+                "$set": {"root": prev_val}})
 
 
 # post = {"root":{}}
-
 metadata = MongoMetadata()
-a = metadata.ls("/root/usr/home/")
+a = metadata.rm("/home/rishi;")
 print(a)
 # print(post_id)
