@@ -1,5 +1,4 @@
 import sys
-from importlib_metadata import metadata
 from flask import Flask, request, render_template
 
 sys.path.insert(0, r'C:\Users\User\hello\DSCI551\Emulated-Distributed-File-System\src\mongodb')  # To handle import of module metadata (temporary)
@@ -16,7 +15,7 @@ COMMAND_DICT = {"mkdir" : metadata.mkdir,
                 "rm" : metadata.rm,
                 "cat" : metadata.cat}
 
-@app.route('/', methods =["GET", "POST"])
+@app.route('/terminal', methods =["GET", "POST"])
 def enter_commands():
     if request.method == "POST":
         print(request, request.data, request.json)
@@ -31,6 +30,21 @@ def enter_commands():
         return {'response': data}
 
     return render_template("terminal.html")
+
+@app.route('/interface', methods =["GET", "POST"])
+def userInterface():
+    if request.method == "POST":
+        print(request, request.data, request.json)
+        command = request.json.get("Button")
+        if command == "root":
+            cmd = "/"
+            folders = metadata.ls(cmd)
+        else:
+            folders = metadata.ls(command)
+        print(folders)
+        return {"response" : folders}
+
+    return render_template("index.html")
  
 if __name__=='__main__':
    app.run(debug=True) # host:localhost, port:5000

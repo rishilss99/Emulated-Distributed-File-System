@@ -1,0 +1,110 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<p>File System:</p>
+<button id="back" type="button" class="btn1"><i class="fa fa-folder" id="back"></i> Back</button>
+<br></br>
+<button id="main_root" type="button" class="btn1" onclick="createPage('/')"><i class="fa fa-folder" id="main_root"></i> Root</button>
+
+
+<script>
+    let URL = "http://127.0.0.1:5000/interface";
+
+    function createPage(cwd) {
+        postRequest(URL, cwd).then(data => {
+            let {buttons, button_ids} = createButton(data);
+            if(cwd == '/'){
+                document.getElementById('back').onclick = function(){
+                    document.location.reload(true)
+                };
+                // set back onclick 
+            }
+            else {
+                pwd = cwd.split('/').slice(0, -1).join('/')
+                if(pwd == '') { 
+                    pwd = '/' 
+                }
+                document.getElementById("back").onclick = function(){
+                    createPage(pwd)
+                };
+                // set onclick for back button 
+            }
+            for (let i = 0; i < buttons.length; i++) {
+                let pwd = ''
+                if(cwd == '/'){
+                    pwd = cwd + buttons[i];
+                } else {
+                    pwd = cwd + '/' + buttons[i];
+                }
+                document.getElementById(button_ids[i]).onclick = function(){
+                    createPage(pwd)
+                };
+            }
+        })
+    }
+
+    function hideButtons(data) {
+        var i = document.getElementsByTagName("button");
+        for(var n in i){
+            if ((data.includes(i[n].id))){
+                i[n].style.visibility = "visible";  
+            }
+            else if (i[n].id == "back") {
+                i[n].style.visibility = "visible";
+            }
+            else if (i[n].id == undefined) {
+                break;
+            }
+            else {
+                i[n].style.display = "none";
+            }
+        }
+    }
+
+    function createButton(data) {
+        let button_ids = []
+        let buttons = []
+
+        for (const x of data) {
+            const button = document.createElement("button");
+            let uid = generateUniqueIds();
+            uid_string = uid.toString() + "_" + x;
+            button.setAttribute("id", uid_string);
+            button.innerHTML = x;
+            document.body.appendChild(button);
+            button.style.display = "block";
+            if (x.includes(".")) {
+                button.className = "fa fa-file";
+            }
+            else {
+                button.className = "fa fa-folder";
+            } 
+            button_ids.push(uid_string);
+            buttons.push(uid_string.split("_")[1]);
+        }
+        hideButtons(button_ids);
+        return {buttons, button_ids};
+    }
+
+    function generateUniqueIds() {
+        var minm = 100000;
+        var maxm = 999999;
+        return Math.floor(Math.random() * (maxm - minm + 1)) + minm;
+    }
+
+    async function postRequest(url, id) {
+        let data = {'Button': id};
+        let res = await fetch(url, {
+                method: 'POST',
+                headers: {
+                        'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+        });
+        if (res.ok) {
+            let ret = await res.json();
+            return ret.response;
+
+        } else {
+            return `HTTP error: ${res.status}`;
+        }
+    }
+</script>
