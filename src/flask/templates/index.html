@@ -1,15 +1,117 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <p>File System:</p>
-<button id="back" type="button" class="btn1"><i class="fa fa-folder" id="back"></i> Back</button>
+
+<style>
+    body {
+        margin: 0px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    /* * {box-sizing: border-box;} */
+        
+    #context-menu {
+        position: fixed;
+        z-index: 10000;
+        width: 150px;
+        background: #1b1a1a;
+        transform: scale(0);
+        transform-origin: top left;
+    }
+
+    #context-menu.active {
+        transform: scale(1);
+        transition: transform 200ms ease-in-out;
+    }
+
+    #context-menu .item {
+        padding: 8px 10px;
+        font-size: 15px;
+        color: #eee;
+    }
+
+    #context-menu .item:hover {
+        background: #555;
+    }
+
+    #context-menu .item i {
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    #context-menu hr {
+        margin: 2px 0px;
+        border-color: #555;
+    }
+
+    .form-popup {
+      display: none;
+      position: fixed;
+      bottom: 10px;
+      right: 15px;
+      left: 15px;
+      border: 3px solid #f1f1f1;
+      z-index: 9;
+    }
+    
+    .form-container {
+      max-width: 300px;
+      padding: 10px;
+      background-color: white;
+    }
+
+    .form-container input[type=text], .form-container input[type=password] {
+      width: 100%;
+      padding: 15px;
+      margin: 5px 0 22px 0;
+      border: none;
+      background: #f1f1f1;
+    }
+
+    .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+      background-color: #ddd;
+      outline: none;
+    }
+    
+    .form-container .btn:hover, .open-button:hover {
+      opacity: 1;
+    
+    }
+</style>
+
+<button id="back" type="button" class="btn1"><i id="back"></i> Back</button>
+<button id="createFolder" type="button" class="open-button" onclick="createFolderClick()"></i>Create Folder</button>
+
+<!-- The form -->
+<div class="form-popup" id="myForm">
+    <form class="form-container">
+  
+      <label for="folderName"><b>Folder Name</b></label>
+      <input id="dirForm" type="text" placeholder="Enter folder name" name="folderName" required>
+  
+      <button id="create" type="button" class="btn create" onclick="createDir()">Create</button>
+      <button id="close" type="button" class="btn cancel" onclick="closeForm()">Close</button>
+    </form>
+</div>
+
+<div id="context-menu"> 
+    <div class="item">
+        <i class="fa fa-cut"></i> Remove
+    </div>
+</div>
+
 <br></br>
-<button id="main_root" type="button" class="btn1" onclick="createPage('/')"><i class="fa fa-folder" id="main_root"></i> Root</button>
+<button id="main_root" type="button" class="root_btn" onclick="createPage('/')"><i class="fa fa-folder" id="main_root"></i> Root</button>
 
 
 <script>
     let URL = "http://127.0.0.1:5000/interface";
+    let curDir;
 
     function createPage(cwd) {
-        postRequest(URL, cwd).then(data => {
+        curDir = cwd;
+        console.log("current directory is:", curDir);
+        let identifier = 'ls';
+        postRequest(URL, cwd, identifier).then(data => {
             let {buttons, button_ids} = createButton(data);
             if(cwd == '/'){
                 document.getElementById('back').onclick = function(){
@@ -37,9 +139,73 @@
                 document.getElementById(button_ids[i]).onclick = function(){
                     createPage(pwd)
                 };
+                var buttonRightClick = document.getElementById(button_ids[i]);
+                buttonRightClick.addEventListener("contextmenu", function(event) {
+                    event.preventDefault();
+                    var contextelement = document.getElementById("context-menu");
+                    contextelement.style.top = mouseY(event) + "px";
+                    contextelement.style.left = mouseX(event) + "px";
+                    contextelement.classList.add("active");
+                    rightClickedButton = button_ids[i].split("_")[1];
+                    console.log("button on which right click was done is", button_ids[i].split("_")[1]);
+                    if (curDir == "/"){
+                        curDir = curDir + rightClickedButton;
+                    }
+                    else {
+                        curDir = curDir + "/" + rightClickedButton;
+                    }              
+                })
             }
         })
     }
+
+    function closeForm() {
+        document.getElementById("myForm").style.display = "none";
+    }
+
+    function createDir(cwd) {
+        let identifier = 'mkdir';
+        console.log("inside create folder curDir variable:", curDir);
+        var name = document.getElementById("dirForm").value;
+        let full_path;
+        if (curDir == "/") {
+            full_path = curDir + name;
+        }
+        else {
+            full_path = curDir + "/" + name;
+        }
+        console.log("full path is, ", full_path);
+        postRequest(URL, full_path, identifier).then(data => {
+            console.log("printing post request data:", data);
+            createPage(full_path);
+        })
+    }
+
+    function createFolderClick() {
+        document.getElementById("myForm").style.display = "block";
+    }
+
+    function removeDir(dir_path, remove_name) {
+        let identifier = "rm";
+        console.log("directory to be removed is", dir_path);
+        console.log("file/dir to be removed", remove_name);
+        const final_path  = dir_path.replace(remove_name, '');
+        console.log("final path after removing dir/file is", final_path);
+        postRequest(URL, dir_path, identifier).then(data => {
+            console.log("printing post request data", data);
+            createPage(final_path);
+        })
+
+    }
+
+    var onRemove = document.getElementById("context-menu");
+    onRemove.addEventListener("click", function() {
+        let remove_name = curDir.substring(curDir.lastIndexOf('/') + 1);
+        file_extension = remove_name.substring(remove_name.lastIndexOf(".") + 1);
+        console.log(file_extension);
+        removeDir(curDir, remove_name);
+    })
+
 
     function hideButtons(data) {
         var i = document.getElementsByTagName("button");
@@ -47,7 +213,8 @@
             if ((data.includes(i[n].id))){
                 i[n].style.visibility = "visible";  
             }
-            else if (i[n].id == "back") {
+            else if ((i[n].id == "back") || (i[n].id == "createFolder")
+            || (i[n].id == "create") || (i[n].id == "close")) {
                 i[n].style.visibility = "visible";
             }
             else if (i[n].id == undefined) {
@@ -90,8 +257,38 @@
         return Math.floor(Math.random() * (maxm - minm + 1)) + minm;
     }
 
-    async function postRequest(url, id) {
-        let data = {'Button': id};
+    window.addEventListener("click", function() {
+        document.getElementById("context-menu").classList.remove("active");
+    })
+
+    function mouseX(evt) {
+        if (evt.pageX) {
+            return evt.pageX;
+        } else if (evt.clientX) {
+            return evt.clientX + (document.documentElement.scrollLeft ?
+            document.documentElement.scrollLeft :
+            document.body.scrollLeft);
+        } else {
+            return null;
+        }
+    }
+
+    function mouseY(evt) {
+        if (evt.pageY) {
+            return evt.pageY;
+        } else if (evt.clientY) {
+            return evt.clientY + (document.documentElement.scrollTop ?
+            document.documentElement.scrollTop :
+            document.body.scrollTop);
+        } else {
+            return null;
+        }
+    }
+
+
+    async function postRequest(url, id, identifier) {
+        let data = {"command" : id,
+                    "identifier" : identifier};
         let res = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -99,6 +296,7 @@
                 },
                 body: JSON.stringify(data),
         });
+        console.log('TEST', res, res.ok)
         if (res.ok) {
             let ret = await res.json();
             return ret.response;

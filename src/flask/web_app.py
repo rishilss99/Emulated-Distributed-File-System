@@ -33,16 +33,24 @@ def enter_commands():
 
 @app.route('/interface', methods =["GET", "POST"])
 def userInterface():
+    print('CHECKPOINT', request, request.method)
     if request.method == "POST":
         print(request, request.data, request.json)
-        command = request.json.get("Button")
-        if command == "root":
-            cmd = "/"
-            folders = metadata.ls(cmd)
-        else:
-            folders = metadata.ls(command)
-        print(folders)
-        return {"response" : folders}
+        command = request.json.get("command")
+        identifier = request.json.get("identifier")
+        if identifier == "ls":
+            if command == "root":
+                cmd = "/"
+                folders = metadata.ls(cmd)
+            else:
+                folders = metadata.ls(command)
+            print(folders)
+            return {"response" : folders}
+        elif identifier == "mkdir":
+            metadata.mkdir(command)
+        elif identifier == "rm":
+            metadata.rm(command)
+            print("rm code to be executed here")
 
     return render_template("index.html")
  

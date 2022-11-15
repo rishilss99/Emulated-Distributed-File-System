@@ -91,6 +91,6 @@ class MongoMetadata:
 
 # post = {"root":{}}
 metadata = MongoMetadata()
-a = metadata.ls("/usr")
+a = metadata.rm("/home/ramu")
 print(a)
 # print(post_id)
