@@ -15,6 +15,11 @@ COMMAND_DICT = {"mkdir" : metadata.mkdir,
                 "rm" : metadata.rm,
                 "cat" : metadata.cat}
 
+@app.route("/", methods=["GET"])
+def landing_page():
+    print("Welcome to the landing page")
+    return render_template("landing_page.html")
+
 @app.route('/terminal', methods =["GET", "POST"])
 def enter_commands():
     if request.method == "POST":

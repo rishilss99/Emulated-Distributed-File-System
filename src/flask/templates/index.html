@@ -1,6 +1,25 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<p>File System:</p>
+<!-- <p>File System:</p> -->
+
+<!DOCTYPE html>
+<!-- Created By CodingNepal -->
+<html lang="en" dir="ltr">
+   <head>
+      <link rel="stylesheet" href="static/css/style.css">
+   </head>
+   <body>
+      <nav>
+         <div class="logo">
+            File Sytem Interface
+         </div>
+         <input type="checkbox" id="click">
+         <label for="click" class="menu-btn">
+         <i class="fas fa-bars"></i>
+         </label>
+      </nav>
+   </body>
+</html>
 
 <style>
     body {
@@ -76,10 +95,23 @@
       opacity: 1;
     
     }
+    .btn1 {
+      background-color: grey; /* Green */
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 20px;
+      margin: 4px 2px;
+      cursor: pointer;
+   }
+
 </style>
 
 <button id="back" type="button" class="btn1"><i id="back"></i> Back</button>
-<button id="createFolder" type="button" class="open-button" onclick="createFolderClick()"></i>Create Folder</button>
+<button id="createFolder" type="button" class="btn1" onclick="createFolderClick()"></i>Create Folder</button>
 
 <!-- The form -->
 <div class="form-popup" id="myForm">
@@ -100,7 +132,7 @@
 </div>
 
 <br></br>
-<button id="main_root" type="button" class="root_btn" onclick="createPage('/')"><i class="fa fa-folder" id="main_root"></i> Root</button>
+<button id="main_root" type="button" class="btn1" onclick="createPage('/')"><i class="fa fa-folder" id="main_root"></i> Root</button>
 
 
 <script>
@@ -146,8 +178,8 @@
                     contextelement.style.top = mouseY(event) + "px";
                     contextelement.style.left = mouseX(event) + "px";
                     contextelement.classList.add("active");
-                    rightClickedButton = button_ids[i].split("_")[1];
-                    console.log("button on which right click was done is", button_ids[i].split("_")[1]);
+                    rightClickedButton = button_ids[i].substring(button_ids[i].indexOf("_")+1);
+                    console.log("button on which right click was done is", rightClickedButton);
                     if (curDir == "/"){
                         curDir = curDir + rightClickedButton;
                     }
@@ -238,12 +270,14 @@
             button.innerHTML = x;
             document.body.appendChild(button);
             button.style.display = "block";
+
             if (x.includes(".")) {
                 button.className = "fa fa-file";
             }
             else {
                 button.className = "fa fa-folder";
             } 
+            button.classList.add("btn1");
             button_ids.push(uid_string);
             buttons.push(uid_string.split("_")[1]);
         }
@@ -305,4 +339,6 @@
             return `HTTP error: ${res.status}`;
         }
     }
+
+
 </script>
