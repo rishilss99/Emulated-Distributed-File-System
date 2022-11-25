@@ -82,7 +82,7 @@ class MongoMetadata:
             rows = []
             with self.mysql_engine.connect() as connection:
                 with connection.begin():
-                    result = connection.execute(text(f"select * from `{path_list[-1]}`"))
+                    result = connection.execute(text(f"select * from `{path_list[-1]}` limit 200"))
             for entry in result:
                 rows.append(' '.join(map(str, entry)))
             return rows

@@ -29,9 +29,9 @@ def enter_commands():
         commands_split = command.split(" ")
         print("commands split:", commands_split)
         if commands_split[0] == "put":
-            print(commands_split[1])
+            # print(commands_split[1])
             data = COMMAND_DICT.get(commands_split[0])(commands_split[1], commands_split[2], int(commands_split[3]))
-            print('data', data)
+            # print('data', data)
         else:
             data = COMMAND_DICT.get(commands_split[0])(commands_split[1])
         if data is None:
