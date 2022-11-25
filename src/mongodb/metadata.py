@@ -79,8 +79,10 @@ class MongoMetadata:
         if path_list[-1] not in head_itr.keys():
             return "File does not exist"
         else:
-            f = open(path_list[-1])
-            return list(f.read())
+            with self.mysql_engine.connect() as connection:
+                with connection.begin():
+                    result = connection.execute(text(f"select * from `{path_list[-1]}`"))
+                return [result]
 
     def rm(self, path):
 
@@ -153,6 +155,6 @@ class MongoMetadata:
 
 # post = {"root":{}}
 metadata = MongoMetadata()
-a = metadata.put('C:/Users/rishi/Downloads/housing.csv', '/home/usr/house.csv', 4)
+a = metadata.cat('/home/usr/house.csv')
 print(a)
 # print(post_id)
