@@ -13,7 +13,8 @@ metadata = MongoMetadata()
 COMMAND_DICT = {"mkdir" : metadata.mkdir,
                 "ls" : metadata.ls,
                 "rm" : metadata.rm,
-                "cat" : metadata.cat}
+                "cat" : metadata.cat,
+                "put" : metadata.put}
 
 @app.route("/", methods=["GET"])
 def landing_page():
@@ -26,12 +27,18 @@ def enter_commands():
         print(request, request.data, request.json)
         command = request.json.get("command")
         commands_split = command.split(" ")
-        data = COMMAND_DICT.get(commands_split[0])(commands_split[1])
+        print("commands split:", commands_split)
+        if commands_split[0] == "put":
+            print(commands_split[1])
+            data = COMMAND_DICT.get(commands_split[0])(commands_split[1], commands_split[2], int(commands_split[3]))
+            print('data', data)
+        else:
+            data = COMMAND_DICT.get(commands_split[0])(commands_split[1])
         if data is None:
             data = ["Not supported command"]
         elif type(data) != list:
-            # data = ["Something went wrong"]
-            print(data)
+            data = ["Something went wrong"]
+        print('response: ',data)
         return {'response': data}
 
     return render_template("terminal.html")

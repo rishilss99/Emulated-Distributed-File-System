@@ -79,10 +79,13 @@ class MongoMetadata:
         if path_list[-1] not in head_itr.keys():
             return "File does not exist"
         else:
+            rows = []
             with self.mysql_engine.connect() as connection:
                 with connection.begin():
                     result = connection.execute(text(f"select * from `{path_list[-1]}`"))
-                return [result]
+            for entry in result:
+                rows.append(' '.join(map(str, entry)))
+            return rows
 
     def rm(self, path):
 
@@ -115,7 +118,7 @@ class MongoMetadata:
         # 2) Check output path
         if output_path[0] != '/':
             return "Require absolute output path starting from root"
-        if path_list[-1][-3:] != "csv":
+        if output_path[-3:] != "csv":
             return "Invalid output file type: Only .csv files allowed"
         path_list = output_path.split("/")
         doc = self.collection.find({"root": {'$exists': 1}})

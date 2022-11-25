@@ -40,6 +40,12 @@
             doRequest(url, command).then(data => {
                 this.echo(data);
             });
+        },
+        put: function(input_path, output_path, partitions) {
+            let command = "put " + input_path + " " + output_path + " " + partitions;
+            doRequest(url, command).then(data => {
+                this.echo(data);
+            })
         }
     }, {
         greetings: 'Flask Terminal'
