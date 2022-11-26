@@ -20,10 +20,26 @@ COMMAND_DICT = {"mkdir" : metadata.mkdir,
 def landing_page():
     return render_template("landing_page.html")
 
-@app.route("/search_analytics", methods=["GET"])
-def search_analytics():
-    print("search analytics")
-    return render_template("terminal.html")
+@app.route("/search", methods=["GET", "POST"])
+def search():
+    if request.method == "POST":
+        print("search")
+        print("uhebvudfvudfv nd", request, request.data, request.json)
+        path = request.json.get("command")
+        stock_name = request.json.get("stock_name")
+        method_name = request.json.get("method_name")
+        attribute_name = request.json.get("attribute_name")
+        ans = metadata.query_data(path, stock_name, method_name, attribute_name)
+        print(ans)
+        ## Run the SQL queries for search here.
+
+    return render_template("search.html")
+
+
+@app.route("/analytics", methods=["GET"])
+def analytics():
+    print("analytics")
+    return render_template("search.html")
 
 @app.route('/terminal', methods =["GET", "POST"])
 def enter_commands():
