@@ -83,8 +83,15 @@ class MongoMetadata:
             with self.mysql_engine.connect() as connection:
                 with connection.begin():
                     result = connection.execute(text(f"select * from `{path_list[-1]}` limit 200"))
+                    columns = connection.execute(text(f"select column_name from information_schema.columns where table_name = '{path_list[-1]}';"))
+            column_string = ""
+            for elem in columns:
+                column_string += elem[0] + " "
+            column_string += "\n"
+            rows.append(column_string)
             for entry in result:
                 rows.append(' '.join(map(str, entry)))
+                rows[-1] += "\n"
             return rows
 
     def rm(self, path):
@@ -157,7 +164,7 @@ class MongoMetadata:
 
 
 # post = {"root":{}}
-metadata = MongoMetadata()
-a = metadata.cat('/home/usr/house.csv')
-print(a)
+# metadata = MongoMetadata()
+# a = metadata.cat('/home/usr/cars.csv')
+# print(a)
 # print(post_id)
