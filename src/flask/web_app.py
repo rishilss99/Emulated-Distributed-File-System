@@ -25,12 +25,18 @@ def search():
     if request.method == "POST":
         print("search")
         print("uhebvudfvudfv nd", request, request.data, request.json)
-        path = request.json.get("command")
-        stock_name = request.json.get("stock_name")
-        method_name = request.json.get("method_name")
-        attribute_name = request.json.get("attribute_name")
-        ans = metadata.query_data(path, stock_name, method_name, attribute_name)
-        print(ans)
+        identifier = request.json.get("identifier")
+        if identifier == "search":
+            path = request.json.get("command")
+            stock_name = request.json.get("stock_name")
+            method_name = request.json.get("method_name")
+            attribute_name = request.json.get("attribute_name")
+            ans = metadata.query_data(path, stock_name, method_name, attribute_name)
+            print(ans)
+        elif identifier == "dropdown":
+            print("dropdown menu here")
+            dropdown_menu = ["one", "two", 'three']  ## Sample output (list of lists is also fine)
+            return {'response': dropdown_menu}
         ## Run the SQL queries for search here.
 
     return render_template("search.html")
