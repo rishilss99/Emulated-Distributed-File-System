@@ -207,23 +207,17 @@
                 }
                 document.getElementById(button_ids[i]).onclick = function(){
                     console.log(button_ids[i]);
-                    if (button_ids[i].endsWith(".csv") === true) {
-                        console.log("Don't do anything");
-                        GenerateTable(pwd);
+                    if (button_ids[i].endsWith(".csv") === true) { 
                         var divTable = document.getElementById("dvTable");
-                        divTable.style.display = "block";
-                        document.getElementById("createFolder").disabled = true;
-                        document.querySelectorAll('.btn1').forEach(elem => {
-                            elem.style.display = "none";
-                        });
-                        let search_data = ["Search", "Analyze"];
+                        let search_data = ["Cat", "Search", "Analyze"];
                         let {buttons, button_ids} = createButton(search_data);
+                        console.log(button_ids);
                         let hidebuttons_search = ["back", "createFolder", button_ids[0], button_ids[1]];
                         console.log(hidebuttons_search);
                         for (const butId of button_ids) {
                             button_ids_split = butId.split("_");
                             if (button_ids_split[1] == "Search") {
-                                document.getElementById(button_ids[0]).onclick = function() {
+                                document.getElementById(button_ids[1]).onclick = function() {
                                     var identifier = "search";
                                     divTable.style.display = "none";
                                     searchForm();
@@ -233,18 +227,25 @@
                                 }
                                 document.getElementById("close").onclick = function() {
                                     filterSearch(pwd);
-                                    // var searchformid = document.getElementById("searchForm");   
-                                    // searchformid.style.display = "none";
                                 }
                             }
                             else if (button_ids_split[1] == "Analyze"){
-                                document.getElementById(button_ids[1]).onclick = function() {
+                                document.getElementById(button_ids[2]).onclick = function() {
                                     divTable.style.display = "none";
                                     window.location.assign(URL_analytics);
                                 }
                             }
+                            else if (button_ids_split[1] == "Cat") {
+                                document.getElementById(button_ids[0]).onclick = function() {
+                                    GenerateTable(pwd);
+                                    divTable.style.display = "block";
+                                    document.getElementById("createFolder").disabled = true;
+                                    document.querySelectorAll('.btn1').forEach(elem => {
+                                        elem.style.display = "none";
+                                    });
+                                }              
+                            }
                         }
-
                     }
                     else{
                         document.getElementById("createFolder").disabled = false;
