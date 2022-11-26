@@ -87,11 +87,9 @@ class MongoMetadata:
             column_string = ""
             for elem in columns:
                 column_string += elem[0] + " "
-            column_string += "\n"
-            rows.append(column_string)
+            rows.append(column_string[:-1])
             for entry in result:
                 rows.append(' '.join(map(str, entry)))
-                rows[-1] += "\n"
             return rows
 
     def rm(self, path):

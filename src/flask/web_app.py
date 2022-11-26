@@ -18,8 +18,12 @@ COMMAND_DICT = {"mkdir" : metadata.mkdir,
 
 @app.route("/", methods=["GET"])
 def landing_page():
-    print("Welcome to the landing page")
     return render_template("landing_page.html")
+
+@app.route("/search_analytics", methods=["GET"])
+def search_analytics():
+    print("search analytics")
+    return render_template("terminal.html")
 
 @app.route('/terminal', methods =["GET", "POST"])
 def enter_commands():
@@ -62,7 +66,10 @@ def userInterface():
             metadata.mkdir(command)
         elif identifier == "rm":
             metadata.rm(command)
-            print("rm code to be executed here")
+        elif identifier == "cat":
+            cat_resp = metadata.cat(command)
+            print("cat command running")
+            return {"response" : cat_resp}
 
     return render_template("index.html")
  
