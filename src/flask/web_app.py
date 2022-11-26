@@ -35,7 +35,7 @@ def search():
             print(ans)
         elif identifier == "dropdown":
             print("dropdown menu here")
-            dropdown_menu = ["one", "two", 'three']  ## Sample output (list of lists is also fine)
+            dropdown_menu = [["AAL"], ["min", "max"], ["open", "high", "low"]]  ## Sample output (list of lists is also fine)
             return {'response': dropdown_menu}
         ## Run the SQL queries for search here.
 

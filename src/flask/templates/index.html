@@ -136,20 +136,18 @@
       <label for="stock_name">Name of Stock:</label><br>
       <!-- <input id="stock_name" type="text" placeholder="Enter stock name" name="stock_name" required> -->
       <select name="stock_name" id="stock_name">
-		<!-- <option value="">--Please choose an option--</option>
-		<option value="C++" >C++</option>
-		<option value="Python">Python</option>
-		<option value="C">C</option>
-		<option value="Java">Java</option>
-		<option value="C#">C#</option>
-		<option value="Ruby">Ruby</option> -->
-	</select>
+	  </select>
       <br></br>
       <label for="method_name">Method:</label><br>
-      <input id="method_name" type="text" placeholder="Enter method name" name="method_name" required>
+      <!-- <input id="method_name" type="text" placeholder="Enter method name" name="method_name" required> -->
+      <select name="method_name" id="method_name">
+      </select>
       <br></br>
       <label for="attribute_name">Attribute:</label><br>
-      <input id="attribute_name" type="text" placeholder="Enter attribute" name="attribute_name" required>
+      <!-- <input id="attribute_name" type="text" placeholder="Enter attribute" name="attribute_name" required> -->
+      <select name="attribute_name" id="attribute_name">
+      </select>
+      <br></br>
   
       <button id="close" type="button" class="btn cancel" onclick="filterSearch()">Filter</button>
       <button id="close" type="button" class="btn cancel" onclick="closeSearchForm()">Close</button>
@@ -294,15 +292,24 @@
         console.log("path for dropdown pwd:", pwd);
         postRequest(URL_search, pwd, identifier).then(options => {
             console.log("printing dropdown request data", options);
-            var selectHtml = "";
+            var stock_name_menus = generateDropdowns(options[0]);
+            var method_name_menus = generateDropdowns(options[1]);
+            var attribute_name_menus = generateDropdowns(options[2]);
+            console.log(stock_name_menus, method_name_menus, attribute_name_menus);
+            document.getElementById("stock_name").innerHTML = stock_name_menus;
+            document.getElementById("method_name").innerHTML = method_name_menus;
+            document.getElementById("attribute_name").innerHTML = attribute_name_menus;
+        });
+    }
 
-            for(var optionIndex = 0; optionIndex < options.length; optionIndex++) {
+    function generateDropdowns(options){
+        var selectHtml = "";
+        for(var optionIndex = 0; optionIndex < options.length; optionIndex++) {
 
-                selectHtml += ("<option>" + options[optionIndex] + "</option>");
+            selectHtml += ("<option>" + options[optionIndex] + "</option>");
 
-            }
-            document.getElementById("stock_name").innerHTML = selectHtml;
-            });
+        }
+        return selectHtml;
     }
 
     function createDir(cwd) {
