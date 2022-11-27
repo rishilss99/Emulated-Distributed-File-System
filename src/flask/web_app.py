@@ -39,17 +39,30 @@ def search():
         elif identifier == "dropdown":
             print("dropdown menu here")
             dropdown_options = searchanal.dropdown(path)
-            columns = metadata.generateDropdowns(path)
             dropdown_menu = [dropdown_options[0], dropdown_options[1], dropdown_options[2]]  ## Sample output (list of lists is also fine)
             return {'response': dropdown_menu}
 
     return render_template("search.html")
 
 
-@app.route("/analytics", methods=["GET"])
+@app.route("/analytics", methods=["GET", "POST"])
 def analytics():
-    print("analytics")
-    return render_template("search.html")
+    if request.method == "POST":
+        print("analytics")
+        print(request, request.data, request.json)
+        dataset_name = request.json.get("command")
+        identifier = request.json.get("identifier")
+        if identifier == "analyze":
+            if dataset_name == "Population Data":
+                dataset = "population.csv"
+            elif dataset_name == "Housing Data":
+                dataset = "house.csv"
+            elif dataset_name == "Stocks Data":
+                dataset = "stocks.csv"
+            data = searchanal.analyseDataset(dataset)
+            return {'response': data}
+
+    return render_template("analytics.html")
 
 @app.route('/terminal', methods =["GET", "POST"])
 def enter_commands():

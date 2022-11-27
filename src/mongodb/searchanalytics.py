@@ -52,3 +52,21 @@ class SearchAnalytics:
                     print(attrib_list)
                     result.extend([stock_list, agg_method ,attrib_list])
                     return result
+
+    
+    def analyseDataset(self, dataset):
+        with self.mysql_engine.connect() as connection:
+            with connection.begin():
+                columns_result = connection.execute(text(f"select column_name from information_schema.columns where table_name = '{dataset}';"))
+                stock_names = connection.execute(text(f"select * from `{dataset}`;"))
+                stock_list = []
+                columns = []
+                column_string = []
+                for elem in columns_result:
+                    column_string.append(elem[0]) # + " "
+                columns.append(column_string[1:-1])
+                for stock in stock_names:
+                    stock = list(stock)[1:]
+                    stock_list.append(stock)
+                stock_list.insert(0, column_string[1:-1])
+                return stock_list
