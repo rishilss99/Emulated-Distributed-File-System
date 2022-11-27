@@ -151,6 +151,8 @@
   
       <button id="close" type="button" class="btn cancel" onclick="filterSearch()">Filter</button>
       <button id="close" type="button" class="btn cancel" onclick="closeSearchForm()">Close</button>
+      <div id="SearchTable"></div>
+      <br></br>
     </form>
 </div>
 
@@ -237,7 +239,8 @@
                             }
                             else if (button_ids_split[1] == "Cat") {
                                 document.getElementById(button_ids[0]).onclick = function() {
-                                    GenerateTable(pwd);
+                                    let identifier = "cat";
+                                    GenerateTable(URL, pwd, identifier);
                                     divTable.style.display = "block";
                                     document.getElementById("createFolder").disabled = true;
                                     document.querySelectorAll('.btn1').forEach(elem => {
@@ -285,7 +288,44 @@
         var attribute_name = document.getElementById("attribute_name").value;
         postRequestSearch(URL_search, curDir, identifier, stock_name, method_name, attribute_name).then(data => {
             console.log("printing post request data:", data);
+            var customers = new Array();
+            console.log(typeof(data));
+            for (const x of data) {
+                column_values = x.split(" ");
+                customers.push(column_values);
+            }
+    
+            var table = document.createElement("TABLE");
+            table.border = "1";
+    
+            var columnCount = customers[0].length;
+    
+            var row = table.insertRow(-1);
+            for (var i = 0; i < columnCount; i++) {
+                var headerCell = document.createElement("TH");
+                headerCell.innerHTML = customers[0][i];
+                row.appendChild(headerCell);
+            }
+    
+        
+            for (var i = 1; i < customers.length; i++) {
+                row = table.insertRow(-1);
+                for (var j = 0; j < columnCount; j++) {
+                    var cell = row.insertCell(-1);
+                    cell.innerHTML = customers[i][j];
+                }
+            }
+    
+            var SearchTable = document.getElementById("SearchTable");
+            SearchTable.innerHTML = "";
+            SearchTable.appendChild(table);
+            var searchTable = document.getElementById("SearchTable");
+            searchTable.style.display = "block";
+
         })
+
+        console.log("generated table"); 
+
     }
 
     function getDropDownMenu(pwd) {
@@ -337,6 +377,9 @@
 
     function closeSearchForm(){
         document.getElementById("searchForm").style.display = "none";
+        var searchTable = document.getElementById("SearchTable");
+        searchTable.style.display = "none";
+        document.getElementById("createFolder").disabled = false;
     }
 
     function searchForm() {
@@ -447,11 +490,10 @@
         }
     }
 
-    function GenerateTable(dir_path){
-        let identifier = "cat";
+    function GenerateTable(url, dir_path, identifier){
         console.log("path for cat is:", dir_path);
-        postRequest(URL, dir_path, identifier).then(data => {
-            console.log("cat data:", data);
+        postRequest(url, dir_path, identifier).then(data => {
+            console.log("search query post request data:::::::", data);
             var customers = new Array();
             console.log(typeof(data));
             for (const x of data) {

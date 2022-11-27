@@ -4,11 +4,13 @@ from flask import Flask, request, render_template
 sys.path.insert(0, r'C:\Users\User\hello\DSCI551\Emulated-Distributed-File-System\src\mongodb')  # To handle import of module metadata (temporary)
 
 from metadata import MongoMetadata
+from searchanalytics import SearchAnalytics
 
 app = Flask(__name__)
 
 ACCEPTED_COMMANDS = ['mkdir', 'ls', 'rm', 'put', 'cat', 'rmdir']
 metadata = MongoMetadata()
+searchanal = SearchAnalytics()
 
 COMMAND_DICT = {"mkdir" : metadata.mkdir,
                 "ls" : metadata.ls,
@@ -33,12 +35,13 @@ def search():
         if identifier == "search":
             rows = metadata.query_data(path, stock_name, method_name, attribute_name)
             print("answer after querying:", rows)
+            return {'response': rows}
         elif identifier == "dropdown":
             print("dropdown menu here")
-            columns = metadata.generateDropdowns(path, stock_name, method_name, attribute_name)
-            dropdown_menu = [["AAL"], ["min", "max"], columns]  ## Sample output (list of lists is also fine)
+            dropdown_options = searchanal.dropdown(path)
+            columns = metadata.generateDropdowns(path)
+            dropdown_menu = [dropdown_options[0], dropdown_options[1], dropdown_options[2]]  ## Sample output (list of lists is also fine)
             return {'response': dropdown_menu}
-        ## Run the SQL queries for search here.
 
     return render_template("search.html")
 
