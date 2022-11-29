@@ -121,6 +121,17 @@
       border-bottom:1px solid #e74c3c;	
       }
 
+      .center {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      td {
+        padding: 10px;
+        margin-left: auto;
+        margin-right: auto;
+        }
+
     </style>
 
     
@@ -229,6 +240,9 @@
         var SearchTable = document.getElementById("SearchTable");
         SearchTable.innerHTML = "";
         SearchTable.appendChild(table);
+        SearchTable.style.padding = '10px';
+        // SearchTable.style.marginLeft = "auto";
+        // SearchTable.style.marginRight = "auto";
 
         console.log("generated table"); 
     }
@@ -259,6 +273,12 @@
         var SearchTable = document.getElementById("SearchTable1");
         SearchTable.innerHTML = "";
         SearchTable.appendChild(table);
+        // SearchTable.style.textAlign = "center";
+        // SearchTable.style.marginLeft = "auto";
+        // SearchTable.style.marginRight = "auto";
+        SearchTable.style.padding = '20px';
+        SearchTable.style.cellpadding = '20px';
+
 
         console.log("generated table"); 
     }

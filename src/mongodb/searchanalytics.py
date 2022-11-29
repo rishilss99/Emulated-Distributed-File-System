@@ -86,7 +86,7 @@ class SearchAnalytics:
             result.append(("Year", inputs[2]))
         elif dataset == "house.csv":
             result.append(("Year", "Price(1000$)"))
-        result.append(list(map(list, mapred.reduce(reduced, inputs[1]))))
+        result.extend(list(map(list, mapred.reduce(reduced, inputs[1]))))
         return result
 
     def analyseDataset(self, dataset, identifier, stock_name=None):
