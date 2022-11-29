@@ -33,11 +33,13 @@ def search():
         print("uhebvudfvudfv nd", request, request.data, request.json)
         identifier = request.json.get("identifier")
         path = request.json.get("command")
-        # stock_name = request.json.get("stock_name")
-        # method_name = request.json.get("method_name")
-        # attribute_name = request.json.get("attribute_name")
+        stock_name = request.json.get("stock_name")
+        method_name = request.json.get("method_name")
+        attribute_name = request.json.get("attribute_name")
         if identifier == "search":
             print("answer after querying:")
+            search_data = searchanal.searchDataset(path, [stock_name, method_name, attribute_name])
+            return {'response': search_data}
         elif identifier == "dropdown":
             print("dropdown menu here")
             dropdown_options = searchanal.dropdown(path)

@@ -33,11 +33,12 @@
             </select>
             <br></br>
         
-            <button id="close" type="button" class="btn cancel" onclick="filterSearch()">Filter</button>
+            <button id="close" type="button" class="btn cancel" onclick="filterSearch()">Query</button>
             <button id="close" type="button" class="btn cancel" onclick="closeSearchForm()">Close</button>
-            <div id="SearchTable"></div>
+            <!-- <div id="SearchTable"></div> -->
             <br></br>
         </form>
+        <div id="SearchTable"></div>
     </div>
 
     <div class="form-housing" id="searchFormHousing" hidden>
@@ -55,9 +56,9 @@
         
             <button id="close" type="button" class="btn cancel" onclick="filterSearch()">Filter</button>
             <button id="close" type="button" class="btn cancel" onclick="closeSearchForm()">Close</button>
-            <div id="SearchTable"></div>
             <br></br>
         </form>
+        <div id="SearchTable1"></div>
     </div>
 
     <style>
@@ -134,15 +135,16 @@
         var identifier = "search";
         var dataset_option = document.getElementById("dataset_name").value;
         var identifier = "search";
-        // divTable.style.display = "none";
+        var searchtable_element = document.getElementById("SearchTable");
+        searchtable_element.style.display = "none";
         if (dataset_option == "Population Data") {
-            pwd = "population.csv";
+            pwd = "/usr/home/population.csv";
         }
         else if (dataset_option == "Housing Data") {
-            pwd = "house.csv";
+            pwd = "/usr/home/house.csv";
         }
         else if (dataset_option == "Stocks Data") {
-            pwd = "stocks.csv";
+            pwd = "/usr/home/stocks.csv";
         }
         searchForm(dataset_option);
         getDropDownMenu(pwd, dataset_option);
@@ -157,47 +159,106 @@
       function filterSearch(){
         let identifier = 'search';
         console.log("inside create folder curDir variable:", curDir);
-        var stock_name = document.getElementById("stock_name").value;
-        console.log(stock_name);
-        var method_name = document.getElementById("method_name").value;
-        var attribute_name = document.getElementById("attribute_name").value;
-        postRequestSearch(URL_search, curDir, identifier, stock_name, method_name, attribute_name).then(data => {
-            console.log("printing post request data:", data);
-            var customers = new Array();
-            console.log(typeof(data));
-            for (const x of data) {
-                column_values = x.split(" ");
-                customers.push(column_values);
+        var dataset_option = document.getElementById("dataset_name").value;
+        console.log("on filter dataset option is", dataset_option);
+
+        if (dataset_option == "Stocks Data") {
+            var stock_name = document.getElementById("stock_name").value;
+            var method_name = document.getElementById("method_name").value;
+            var attribute_name = document.getElementById("attribute_name").value;
+            postRequestSearch(URL_search, curDir, identifier, stock_name, method_name, attribute_name).then(data => {
+                console.log("printing post stocks request data:", data);
+                var searchTable = document.getElementById("SearchTable");
+                searchTable.style.display = "block";
+                var data_list = new Array();
+                console.log(typeof(data));
+                for (const x of data) {
+                    console.log(x);
+                    // column_values = x.split(" ");
+                    data_list.push(x);
+                }
+                GenerateTable(data_list);
+            })
         }
-    
+
+        else if (dataset_option == "Housing Data") {
+            var state_name = document.getElementById("state_name").value;
+            var method_house_name = document.getElementById("method_name_house").value;
+            postRequestSearch(URL_search, curDir, identifier, state_name, method_house_name).then(data => {
+                var searchTable = document.getElementById("SearchTable1");
+                searchTable.style.display = "block";
+                console.log("printing post house request data:", data);
+                var data_list = new Array();
+                console.log(typeof(data));
+                for (const x of data) {
+                    // column_values = x.split(" ");
+                    data_list.push(x);
+                }
+                GenerateTable1(data_list);
+            }) 
+        }
+
+        else {
+            console.log("Population data is not supported");
+        }
+        
+    }
+
+    function GenerateTable(data_list) {
         var table = document.createElement("TABLE");
         table.border = "1";
 
-        var columnCount = customers[0].length;
+        var columnCount = data_list[0].length;
 
         var row = table.insertRow(-1);
         for (var i = 0; i < columnCount; i++) {
             var headerCell = document.createElement("TH");
-            headerCell.innerHTML = customers[0][i];
+            headerCell.innerHTML = data_list[0][i];
             row.appendChild(headerCell);
         }
     
         
-        for (var i = 1; i < customers.length; i++) {
+        for (var i = 1; i < data_list.length; i++) {
             row = table.insertRow(-1);
             for (var j = 0; j < columnCount; j++) {
                 var cell = row.insertCell(-1);
-                cell.innerHTML = customers[i][j];
+                cell.innerHTML = data_list[i][j];
             }
         }
 
         var SearchTable = document.getElementById("SearchTable");
         SearchTable.innerHTML = "";
         SearchTable.appendChild(table);
-        var searchTable = document.getElementById("SearchTable");
-        searchTable.style.display = "block";
 
-        })
+        console.log("generated table"); 
+    }
+
+    
+    function GenerateTable1(data_list) {
+        var table = document.createElement("TABLE");
+        table.border = "1";
+
+        var columnCount = data_list[0].length;
+
+        var row = table.insertRow(-1);
+        for (var i = 0; i < columnCount; i++) {
+            var headerCell = document.createElement("TH");
+            headerCell.innerHTML = data_list[0][i];
+            row.appendChild(headerCell);
+        }
+    
+        
+        for (var i = 1; i < data_list.length; i++) {
+            row = table.insertRow(-1);
+            for (var j = 0; j < columnCount; j++) {
+                var cell = row.insertCell(-1);
+                cell.innerHTML = data_list[i][j];
+            }
+        }
+
+        var SearchTable = document.getElementById("SearchTable1");
+        SearchTable.innerHTML = "";
+        SearchTable.appendChild(table);
 
         console.log("generated table"); 
     }

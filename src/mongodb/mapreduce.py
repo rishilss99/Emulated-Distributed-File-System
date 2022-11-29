@@ -28,9 +28,10 @@ class MapReduce:
             agg_method = inputs[1]
             with engine.connect() as connection:
                 with connection.begin():
-                    query_result = connection.execute(text(f"select substr(date,1,4), max(`{state_name}`) from `{dataset}` partition ({partition}) group by substr(date,1,4);"))
+                    query_result = connection.execute(text(f"select substr(date,1,4), {agg_method}(`{state_name}`) from `{dataset}` partition ({partition}) group by substr(date,1,4);"))
                     for row in query_result:
-                        result[row[0]] = float(row[1])
+                        if row[1] != None:
+                            result[row[0]] = float(row[1])
                 return result
                         
     

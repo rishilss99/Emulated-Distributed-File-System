@@ -76,11 +76,14 @@ class SearchAnalytics:
         
         path_list = path.split("/")
         dataset = path_list[-1]
+        print("inputs", inputs)
+        print(path)
         result = []
         for partition in metadata.getPartitionLocations(path):
+            print("partion", partition)
             result.append(mapred.map(self.mysql_engine, dataset, partition, inputs))
-        print(list(map(list, mapred.reduce(result, inputs[1]))))
-        # return list(map(list, mapred.reduce(result, inputs[1])))
+        # print(list(map(list, mapred.reduce(result, inputs[1]))))
+        return list(map(list, mapred.reduce(result, inputs[1])))
 
     def analyseDataset(self, dataset, identifier, stock_name=None):
         dataset = dataset.split("/")[-1]
