@@ -145,7 +145,7 @@ class MongoMetadata:
 
         # 4) Update MongoDB EDFS
         file_dict = {}
-        for idx in range(1,partitions+1):
+        for idx in range(0,partitions):
             file_dict[f"P{idx}"] = f"p{idx}"
         head_itr[path_list[-1]] = file_dict
         self.collection.update_one({"root": {'$exists': 1}}, {
@@ -154,15 +154,30 @@ class MongoMetadata:
 
     def getPartitionLocations(self, path):
 
-        pass
+        if path[0] != '/':
+            return "Require absolute path starting from root"
+        path_list = path.split("/")
+        if path_list[-1][-3:] != "csv":
+            return "Invalid file type: Only .csv files allowed"
+        doc = self.collection.find({"root": {'$exists': 1}})
+        head_itr = doc[0]['root']
+        for dir in path_list[1:-1:1]:
+            if dir not in head_itr:
+                return "Invalid file path"
+            head_itr = head_itr[dir]
+        if path_list[-1] not in head_itr.keys():
+            return "File does not exist"
+        else:
+            head_itr = head_itr[path_list[-1]]
+            return list(head_itr.values())
+        
 
     def readPartition(self, path, partition_num):
 
         pass
 
 
-# post = {"root":{}}
-# metadata = MongoMetadata()
-# a = metadata.cat('/home/usr/cars.csv')
-# print(a)
-# print(post_id)
+post = {"root":{}}
+metadata = MongoMetadata()
+a = metadata.getPartitionLocations('/home/usr/stocks1.csv')
+print(a)
