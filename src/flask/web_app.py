@@ -37,9 +37,7 @@ def search():
         method_name = request.json.get("method_name")
         attribute_name = request.json.get("attribute_name")
         if identifier == "search":
-            rows = metadata.query_data(path, stock_name, method_name, attribute_name)
-            print("answer after querying:", rows)
-            return {'response': rows}
+            print("answer after querying:")
         elif identifier == "dropdown":
             print("dropdown menu here")
             dropdown_options = searchanal.dropdown(path)
