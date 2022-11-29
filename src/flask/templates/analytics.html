@@ -105,6 +105,7 @@
             console.log("printing graph related data:", data);
             console.log(data[0]);
             getDropDownMenu(data[0]);
+            document.getElementById("plot").style.display = "none";
             index = data[0].indexOf(attribute_option);
             var dataset = data.map(d => [d[0], d[index]]);
 
