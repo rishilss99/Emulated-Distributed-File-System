@@ -201,9 +201,3 @@ class MongoMetadata:
                 rows.append(' '.join(map(str, entry)))
             return rows
         
-
-
-post = {"root":{}}
-metadata = MongoMetadata()
-a = metadata.getPartitionLocations('/home/usr/stocks1.csv')
-print(a)

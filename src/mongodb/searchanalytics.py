@@ -76,14 +76,18 @@ class SearchAnalytics:
         
         path_list = path.split("/")
         dataset = path_list[-1]
-        print("inputs", inputs)
-        print(path)
-        result = []
+        reduced = []
         for partition in metadata.getPartitionLocations(path):
             print("partion", partition)
-            result.append(mapred.map(self.mysql_engine, dataset, partition, inputs))
+            reduced.append(mapred.map(self.mysql_engine, dataset, partition, inputs))
         # print(list(map(list, mapred.reduce(result, inputs[1]))))
-        return list(map(list, mapred.reduce(result, inputs[1])))
+        result = []
+        if dataset == "stocks.csv":
+            result.append(("Year", inputs[2]))
+        elif dataset == "house.csv":
+            result.append(("Year", "Price(1000$)"))
+        result.append(list(map(list, mapred.reduce(reduced, inputs[1]))))
+        return result
 
     def analyseDataset(self, dataset, identifier, stock_name=None):
         dataset = dataset.split("/")[-1]
@@ -127,3 +131,6 @@ class SearchAnalytics:
                 plt.plot(df_plot['date'], df_plot['close'])
                 plt.title(company)
                 plt.savefig("./images/{0}.png".format(company))
+
+search = SearchAnalytics()
+search.searchDataset("/usr/home/stocks.csv",["AAL","min","open"])
