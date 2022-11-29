@@ -96,7 +96,7 @@ class SearchAnalytics:
             with connection.begin():
                 columns_result = connection.execute(text(f"select column_name from information_schema.columns where table_name = '{dataset}';"))
                 if identifier == "analyze":
-                    stock_names = connection.execute(text(f"select * from `{dataset}` limit 1000;"))
+                    stock_names = connection.execute(text(f"select * from `{dataset}` limit 10000;"))
                 elif identifier == "cat":
                     stock_names = connection.execute(text(f"select * from `{dataset}` limit 200;"))
                 stock_list = []
@@ -128,7 +128,7 @@ class SearchAnalytics:
                 print(company)
                 plt.subplot(2, 2, i)
                 df_plot = df[df['Name'] == company]
-                plt.plot(df_plot['date'], df_plot['close'])
+                plt.plot(df_plot['date'], df_plot['close'], color='red')
                 plt.xlabel("Year")
                 plt.ylabel("Closing Prices")
                 plt.legend(["{0}".format(company)])
