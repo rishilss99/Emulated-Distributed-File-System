@@ -38,6 +38,8 @@
         cat: function(cmdInput) {
             let command = "cat " + cmdInput;
             doRequest(url, command).then(data => {
+                console.log(typeof(data));
+                console.log("data:", data);
                 this.echo(data);
             });
         },

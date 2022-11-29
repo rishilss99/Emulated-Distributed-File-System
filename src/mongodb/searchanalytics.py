@@ -2,10 +2,15 @@ from importlib.metadata import metadata
 from pymongo import MongoClient
 from sqlalchemy import create_engine, text
 import pandas as pd
+import matplotlib.pyplot as plt
+from metadata import MongoMetadata
+from mapreduce import MapReduce
 
 """An important consideration when working with the file system functions of this EDFS
     is that they require absolute path much like the Hadoop DFS"""
 
+metadata = MongoMetadata()
+mapred = MapReduce()
 
 class SearchAnalytics:
     def __init__(self):
@@ -47,18 +52,44 @@ class SearchAnalytics:
                     attrib_list = []
                     for attrib in attributes:
                         attrib_list.append(''.join(map(str,attrib)))
-                    attrib_list[0] = "all"
-                    print(stock_list)
-                    print(attrib_list)
+                    attrib_list.remove("id")
+                    attrib_list.remove("date")
+                    attrib_list.remove("Name")
                     result.extend([stock_list, agg_method ,attrib_list])
                     return result
 
-    
-    def analyseDataset(self, dataset):
+        elif(path_list[-1] == 'housing.csv'):
+            with self.mysql_engine.connect() as connection:
+                with connection.begin():
+                    state_names = connection.execute(text(f"select column_name from information_schema.columns where table_name = '{path_list[-1]}';"))
+                    state_list = []
+                    for state in state_names:
+                        state_list.append(''.join(map(str,stock)))
+                    state_list.remove("id")
+                    state_list.remove("date")
+                    agg_method = ["avg", "min", "max"]
+                    result.extend([state_list, agg_method])
+                    return result 
+
+    def searchDataset(self, path, inputs):
+        
+        path_list = path.split("/")
+        dataset = path_list[-1]
+        result = []
+        for partition in metadata.getPartitionLocations(path):
+            result.append(mapred.map(self.mysql_engine, dataset, partition, inputs))
+        print(result)
+
+    def analyseDataset(self, dataset, identifier, stock_name=None):
+        dataset = dataset.split("/")[-1]
+        print(dataset)
         with self.mysql_engine.connect() as connection:
             with connection.begin():
                 columns_result = connection.execute(text(f"select column_name from information_schema.columns where table_name = '{dataset}';"))
-                stock_names = connection.execute(text(f"select * from `{dataset}`;"))
+                if identifier == "analyze":
+                    stock_names = connection.execute(text(f"select * from `{dataset}` limit 1000;"))
+                elif identifier == "cat":
+                    stock_names = connection.execute(text(f"select * from `{dataset}` limit 200;"))
                 stock_list = []
                 columns = []
                 column_string = []
@@ -68,5 +99,25 @@ class SearchAnalytics:
                 for stock in stock_names:
                     stock = list(stock)[1:]
                     stock_list.append(stock)
-                stock_list.insert(0, column_string[1:-1])
-                return stock_list
+                stock_list.insert(0, column_string[1:])
+                if dataset == "stocks.csv" and identifier == 'analyze':
+                    df = pd.DataFrame(stock_list[1:], columns=column_string[1:])
+                    df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
+                    print("printing debug", stock_name)
+                    names_stocks = df['Name'].unique().tolist()
+                    self.plotStocksData(df, stock_name)
+                    return [names_stocks]
+                else:
+                    return stock_list    
+
+    def plotStocksData(self, df, stock_name):
+        company_list = []
+        company_list.append(stock_name)
+        plt.figure(figsize=(20,12))
+        for i, company in enumerate(company_list, 1):
+            print(company)
+            plt.subplot(2, 2, i)
+            df_plot = df[df['Name'] == company]
+            plt.plot(df_plot['date'], df_plot['close'])
+            plt.title(company)
+            plt.savefig("test.png")

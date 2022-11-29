@@ -1,5 +1,8 @@
 import sys
+import os
 from flask import Flask, request, render_template
+from flask import send_file
+from flask import Response
 
 sys.path.insert(0, r'C:\Users\User\hello\DSCI551\Emulated-Distributed-File-System\src\mongodb')  # To handle import of module metadata (temporary)
 
@@ -21,6 +24,7 @@ COMMAND_DICT = {"mkdir" : metadata.mkdir,
 @app.route("/", methods=["GET"])
 def landing_page():
     return render_template("landing_page.html")
+
 
 @app.route("/search", methods=["GET", "POST"])
 def search():
@@ -51,6 +55,8 @@ def analytics():
         print("analytics")
         print(request, request.data, request.json)
         dataset_name = request.json.get("command")
+        stock_name = request.json.get("attribute_option")
+        print(dataset_name)
         identifier = request.json.get("identifier")
         if identifier == "analyze":
             if dataset_name == "Population Data":
@@ -59,7 +65,10 @@ def analytics():
                 dataset = "house.csv"
             elif dataset_name == "Stocks Data":
                 dataset = "stocks.csv"
-            data = searchanal.analyseDataset(dataset)
+            data = searchanal.analyseDataset(dataset, identifier, stock_name)
+            return {'response': data}
+        elif identifier == "cat":
+            data = searchanal.analyseDataset(dataset_name, identifier)
             return {'response': data}
 
     return render_template("analytics.html")
@@ -111,6 +120,10 @@ def userInterface():
             return {"response" : cat_resp}
 
     return render_template("index.html")
+
+@app.route('/test.png')
+def get_dir():
+    return send_file('./test.png')
  
 if __name__=='__main__':
    app.run(debug=True) # host:localhost, port:5000
