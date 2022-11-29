@@ -58,17 +58,18 @@ class SearchAnalytics:
                     result.extend([stock_list, agg_method ,attrib_list])
                     return result
 
-        elif(path_list[-1] == 'housing.csv'):
+        elif(path_list[-1] == 'house.csv'):
             with self.mysql_engine.connect() as connection:
                 with connection.begin():
                     state_names = connection.execute(text(f"select column_name from information_schema.columns where table_name = '{path_list[-1]}';"))
                     state_list = []
                     for state in state_names:
-                        state_list.append(''.join(map(str,stock)))
+                        state_list.append(''.join(map(str,state)))
+                    print("state list debug,", state_list)
                     state_list.remove("id")
-                    state_list.remove("date")
+                    state_list.remove("Date")
                     agg_method = ["avg", "min", "max"]
-                    result.extend([state_list, agg_method])
+                    result.extend([state_list, agg_method, ["None"]])
                     return result 
 
     def searchDataset(self, path, inputs):
@@ -111,13 +112,14 @@ class SearchAnalytics:
                     return stock_list    
 
     def plotStocksData(self, df, stock_name):
-        company_list = []
-        company_list.append(stock_name)
-        plt.figure(figsize=(20,12))
-        for i, company in enumerate(company_list, 1):
-            print(company)
-            plt.subplot(2, 2, i)
-            df_plot = df[df['Name'] == company]
-            plt.plot(df_plot['date'], df_plot['close'])
-            plt.title(company)
-            plt.savefig("./images/{0}.png".format(company))
+        if stock_name is not None:
+            company_list = []
+            company_list.append(stock_name)
+            plt.figure(figsize=(20,12))
+            for i, company in enumerate(company_list, 1):
+                print(company)
+                plt.subplot(2, 2, i)
+                df_plot = df[df['Name'] == company]
+                plt.plot(df_plot['date'], df_plot['close'])
+                plt.title(company)
+                plt.savefig("./images/{0}.png".format(company))
