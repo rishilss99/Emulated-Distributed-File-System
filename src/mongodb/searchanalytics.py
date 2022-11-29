@@ -129,7 +129,10 @@ class SearchAnalytics:
                 plt.subplot(2, 2, i)
                 df_plot = df[df['Name'] == company]
                 plt.plot(df_plot['date'], df_plot['close'])
-                plt.title(company)
+                plt.xlabel("Year")
+                plt.ylabel("Closing Prices")
+                plt.legend(["{0}".format(company)])
+                plt.title("Analyse closing price of all the stocks")
                 plt.savefig("./images/{0}.png".format(company))
 
 search = SearchAnalytics()

@@ -1,5 +1,8 @@
 <html>
   <body>
+    <link rel="shortcut icon" href="/assets/favicon.ico">
+    <link rel="stylesheet" href="/assets/dscode.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <label for="dataset_name" class="dataset-field">Dataset Name:</label>
         <select name="dataset_name" id="dataset_name", class="dataset_name"> 
             <option value="" disabled selected>Choose your Dataset</option> 
@@ -38,7 +41,7 @@
             <!-- <div id="SearchTable"></div> -->
             <br></br>
         </form>
-        <div id="SearchTable"></div>
+        <div id="SearchTable" class="content-table"></div>
     </div>
 
     <div class="form-housing" id="searchFormHousing" hidden>
@@ -58,7 +61,7 @@
             <button id="close" type="button" class="btn cancel" onclick="closeSearchForm()">Close</button>
             <br></br>
         </form>
-        <div id="SearchTable1"></div>
+        <div id="SearchTable1" class="content-table"></div>
     </div>
 
     <style>
@@ -126,11 +129,53 @@
         margin-right: auto;
       }
 
-      td {
-        padding: 10px;
+      /* .table {
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 0.9em;
+        min-width: 400px;
+        border-radius: 5px 5px 0 0;
+      } */
+
+
+      .content-table  td {
+        padding: 12px 15px;
         margin-left: auto;
         margin-right: auto;
-        }
+        border-collapse: collapse;
+        text-align: center;
+        margin: 25px 0;
+        font-size: 0.9em;
+      }
+
+      .content-table th {
+        background-color: #994545;
+        padding: 12px;
+        color: #ffffff;
+        text-align: center;
+        font-weight: bold;
+        margin: 25px 0;
+        font-size: 0.9em;
+        min-width: 400px;
+      }
+
+      /* .content-table th {
+        padding: 12px;
+      } */
+
+      /* .content-table th {
+        border-bottom: 1px solid #dddddd;
+
+      } */
+        
+      .content-table tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+
+      }
+
+      .content-table tbody tr:last-of-type {
+        border-bottom: 2px solid #009879;
+      }
 
     </style>
 
@@ -217,7 +262,7 @@
 
     function GenerateTable(data_list) {
         var table = document.createElement("TABLE");
-        table.border = "1";
+        table.border = "0";
 
         var columnCount = data_list[0].length;
 
@@ -239,10 +284,13 @@
 
         var SearchTable = document.getElementById("SearchTable");
         SearchTable.innerHTML = "";
+        var headerCell = document.createElement("TH");
+        var tbody= document.createElement("TBODY");
         SearchTable.appendChild(table);
+        SearchTable.appendChild(headerCell);
+        SearchTable.appendChild(tbody);
+        SearchTable.classList.add("content-table");
         SearchTable.style.padding = '10px';
-        // SearchTable.style.marginLeft = "auto";
-        // SearchTable.style.marginRight = "auto";
 
         console.log("generated table"); 
     }
@@ -250,7 +298,7 @@
     
     function GenerateTable1(data_list) {
         var table = document.createElement("TABLE");
-        table.border = "1";
+        table.border = "0";
 
         var columnCount = data_list[0].length;
 
@@ -273,6 +321,7 @@
         var SearchTable = document.getElementById("SearchTable1");
         SearchTable.innerHTML = "";
         SearchTable.appendChild(table);
+        SearchTable.classList.add("content-table");
         // SearchTable.style.textAlign = "center";
         // SearchTable.style.marginLeft = "auto";
         // SearchTable.style.marginRight = "auto";
