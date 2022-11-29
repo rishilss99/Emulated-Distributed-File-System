@@ -173,8 +173,34 @@ class MongoMetadata:
         
 
     def readPartition(self, path, partition_num):
-
-        pass
+        
+        if path[0] != '/':
+            return "Require absolute path starting from root"
+        path_list = path.split("/")
+        if path_list[-1][-3:] != "csv":
+            return "Invalid file type: Only .csv files allowed"
+        doc = self.collection.find({"root": {'$exists': 1}})
+        head_itr = doc[0]['root']
+        for dir in path_list[1:-1:1]:
+            if dir not in head_itr:
+                return "Invalid file path"
+            head_itr = head_itr[dir]
+        if path_list[-1] not in head_itr.keys():
+            return "File does not exist"
+        else:
+            rows = []
+            with self.mysql_engine.connect() as connection:
+                with connection.begin():
+                    result = connection.execute(text(f"select * from `{path_list[-1]}` partition ({partition_num}) limit 200"))
+                    columns = connection.execute(text(f"select column_name from information_schema.columns where table_name = '{path_list[-1]}';"))
+            column_string = ""
+            for elem in columns:
+                column_string += elem[0] + " "
+            rows.append(column_string[:-1])
+            for entry in result:
+                rows.append(' '.join(map(str, entry)))
+            return rows
+        
 
 
 post = {"root":{}}
