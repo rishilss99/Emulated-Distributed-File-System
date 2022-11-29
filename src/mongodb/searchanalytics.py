@@ -65,7 +65,6 @@ class SearchAnalytics:
                     state_list = []
                     for state in state_names:
                         state_list.append(''.join(map(str,state)))
-                    print("state list debug,", state_list)
                     state_list.remove("id")
                     state_list.remove("Date")
                     agg_method = ["avg", "min", "max"]
@@ -78,9 +77,7 @@ class SearchAnalytics:
         dataset = path_list[-1]
         reduced = []
         for partition in metadata.getPartitionLocations(path):
-            print("partion", partition)
             reduced.append(mapred.map(self.mysql_engine, dataset, partition, inputs))
-        # print(list(map(list, mapred.reduce(result, inputs[1]))))
         result = []
         if dataset == "stocks.csv":
             result.append(("Year", inputs[2]))
@@ -91,7 +88,6 @@ class SearchAnalytics:
 
     def analyseDataset(self, dataset, identifier, stock_name=None):
         dataset = dataset.split("/")[-1]
-        print(dataset)
         with self.mysql_engine.connect() as connection:
             with connection.begin():
                 columns_result = connection.execute(text(f"select column_name from information_schema.columns where table_name = '{dataset}';"))
@@ -112,7 +108,6 @@ class SearchAnalytics:
                 if dataset == "stocks.csv" and identifier == 'analyze':
                     df = pd.DataFrame(stock_list[1:], columns=column_string[1:])
                     df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
-                    print("printing debug", stock_name)
                     names_stocks = df['Name'].unique().tolist()
                     self.plotStocksData(df, stock_name)
                     return [names_stocks]

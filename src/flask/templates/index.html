@@ -129,15 +129,6 @@
         overflow: hidden;
         padding: 12px;
     }
-
-    /* .content-table th {
-    padding: 12px;
-    } */
-
-    /* .content-table th {
-    border-bottom: 1px solid #dddddd;
-
-    } */
     
     .content-table tbody tr:nth-of-type(even) {
     background-color: #f3f3f3;
@@ -153,7 +144,6 @@
 <button id="back" type="button" class="btn2"><i id="back"></i> Back</button>
 <button id="createFolder" type="button" class="btn3" onclick="createFolderClick()"></i>NewFolder</button>
 
-<!-- The form -->
 <div class="form-popup" id="myForm">
     <form class="form-container">
   
@@ -182,7 +172,6 @@
 
     function createPage(cwd) {
         curDir = cwd;
-        console.log("current directory is:", curDir);
         let identifier = 'ls';
         postRequest(URL, cwd, identifier).then(data => {
             let {buttons, button_ids} = createButton(data);
@@ -191,22 +180,18 @@
                     document.location.reload(true);
 
                 };
-                // set back onclick 
             }
             else {
                 pwd = cwd.split('/').slice(0, -1).join('/')
                 if(pwd == '') { 
                     pwd = '/' 
                 }
-                console.log("pwd debuggin", pwd);
                 document.getElementById("back").onclick = function(){
-                    console.log()
                     createPage(pwd)
                     var divTable = document.getElementById("dvTable");
                     divTable.style.display = "none";
                     document.getElementById("createFolder").disabled = false;
                 };
-                // set onclick for back button 
             }
             for (let i = 0; i < buttons.length; i++) {
                 let pwd = ''
@@ -216,9 +201,7 @@
                     pwd = cwd + '/' + buttons[i];
                 }
                 document.getElementById(button_ids[i]).onclick = function(){
-                    console.log(button_ids[i]);
                     if (button_ids[i].endsWith(".csv") === true) {
-                        console.log("pwd after csv file button is clicked", pwd);
                         var divTable = document.getElementById("dvTable");
                         let identifier = "cat";
                         GenerateTable(URL_analytics, pwd, identifier);
@@ -227,10 +210,6 @@
                         document.querySelectorAll('.btn1').forEach(elem => {
                             elem.style.display = "none";
                         });
-                        // document.getElementById("back").onclick = function() {
-                        //     createPage(pwd);
-                        //     divTable.style.display = "none";
-                        // }
                     }
                     else{
                         document.getElementById("createFolder").disabled = false;
@@ -263,7 +242,6 @@
 
     function createDir(cwd) {
         let identifier = 'mkdir';
-        console.log("inside create folder curDir variable:", curDir);
         var name = document.getElementById("dirForm").value;
         let full_path;
         if (curDir == "/") {
@@ -272,9 +250,7 @@
         else {
             full_path = curDir + "/" + name;
         }
-        console.log("full path is, ", full_path);
         postRequest(URL, full_path, identifier).then(data => {
-            console.log("printing post request data:", data);
             createPage(full_path);
         })
     }
@@ -285,12 +261,8 @@
 
     function removeDir(dir_path, remove_name) {
         let identifier = "rm";
-        console.log("directory to be removed is", dir_path);
-        console.log("file/dir to be removed", remove_name);
         const final_path  = dir_path.replace(remove_name, '');
-        console.log("final path after removing dir/file is", final_path);
         postRequest(URL, dir_path, identifier).then(data => {
-            console.log("printing post request data", data);
             createPage(final_path);
         })
 
@@ -300,7 +272,6 @@
     onRemove.addEventListener("click", function() {
         let remove_name = curDir.substring(curDir.lastIndexOf('/') + 1);
         file_extension = remove_name.substring(remove_name.lastIndexOf(".") + 1);
-        console.log(file_extension);
         removeDir(curDir, remove_name);
     })
 
@@ -390,13 +361,8 @@
     function GenerateTable(url, dir_path, identifier){
         console.log("path for cat is:", dir_path);
         postRequest(url, dir_path, identifier).then(data => {
-            console.log("search query post request data:::::::", data);
             var customers = new Array();
-            console.log(data[0]);
             for (const x of data) {
-                // console.log(x);
-                // column_values = x.split(" ");
-                // console.log(column_values);
                 customers.push(x);
             }
     

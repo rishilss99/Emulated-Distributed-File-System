@@ -29,19 +29,15 @@ def landing_page():
 @app.route("/search", methods=["GET", "POST"])
 def search():
     if request.method == "POST":
-        print("search")
-        print("uhebvudfvudfv nd", request, request.data, request.json)
         identifier = request.json.get("identifier")
         path = request.json.get("command")
         stock_name = request.json.get("stock_name")
         method_name = request.json.get("method_name")
         attribute_name = request.json.get("attribute_name")
         if identifier == "search":
-            print("answer after querying:")
             search_data = searchanal.searchDataset(path, [stock_name, method_name, attribute_name])
             return {'response': search_data}
         elif identifier == "dropdown":
-            print("dropdown menu here")
             dropdown_options = searchanal.dropdown(path)
             dropdown_menu = [dropdown_options[0], dropdown_options[1], dropdown_options[2]]  ## Sample output (list of lists is also fine)
             return {'response': dropdown_menu}
@@ -52,11 +48,8 @@ def search():
 @app.route("/analytics", methods=["GET", "POST"])
 def analytics():
     if request.method == "POST":
-        print("analytics")
-        print(request, request.data, request.json)
         dataset_name = request.json.get("command")
         stock_name = request.json.get("attribute_option")
-        print(dataset_name)
         identifier = request.json.get("identifier")
         if identifier == "analyze":
             if dataset_name == "Population Data":
@@ -76,21 +69,16 @@ def analytics():
 @app.route('/terminal', methods =["GET", "POST"])
 def enter_commands():
     if request.method == "POST":
-        print(request, request.data, request.json)
         command = request.json.get("command")
         commands_split = command.split(" ")
-        print("commands split:", commands_split)
         if commands_split[0] == "put":
-            # print(commands_split[1])
             data = COMMAND_DICT.get(commands_split[0])(commands_split[1], commands_split[2], int(commands_split[3]))
-            # print('data', data)
         else:
             data = COMMAND_DICT.get(commands_split[0])(commands_split[1])
         if data is None:
             data = ["Not supported command"]
         elif type(data) != list:
             data = ["Something went wrong"]
-        print('response: ',data)
         return {'response': data}
 
     return render_template("terminal.html")
@@ -99,7 +87,6 @@ def enter_commands():
 def userInterface():
     print('CHECKPOINT', request, request.method)
     if request.method == "POST":
-        print(request, request.data, request.json)
         command = request.json.get("command")
         identifier = request.json.get("identifier")
         if identifier == "ls":
@@ -108,7 +95,6 @@ def userInterface():
                 folders = metadata.ls(cmd)
             else:
                 folders = metadata.ls(command)
-            print(folders)
             return {"response" : folders}
         elif identifier == "mkdir":
             metadata.mkdir(command)
@@ -116,7 +102,6 @@ def userInterface():
             metadata.rm(command)
         elif identifier == "cat":
             cat_resp = metadata.cat(command)
-            print("cat command running")
             return {"response" : cat_resp}
 
     return render_template("index.html")

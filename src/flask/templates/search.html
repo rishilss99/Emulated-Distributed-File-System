@@ -38,7 +38,6 @@
         
             <button id="close" type="button" class="btn cancel" onclick="filterSearch()">Query</button>
             <button id="close" type="button" class="btn cancel" onclick="closeSearchForm()">Close</button>
-            <!-- <div id="SearchTable"></div> -->
             <br></br>
         </form>
         <div id="SearchTable" class="content-table"></div>
@@ -129,14 +128,6 @@
         margin-right: auto;
       }
 
-      /* .table {
-        border-collapse: collapse;
-        margin: 25px 0;
-        font-size: 0.9em;
-        min-width: 400px;
-        border-radius: 5px 5px 0 0;
-      } */
-
 
       .content-table  td {
         padding: 12px 15px;
@@ -158,15 +149,6 @@
         font-size: 0.9em;
         min-width: 400px;
       }
-
-      /* .content-table th {
-        padding: 12px;
-      } */
-
-      /* .content-table th {
-        border-bottom: 1px solid #dddddd;
-
-      } */
         
       .content-table tbody tr:nth-of-type(even) {
         background-color: #f3f3f3;
@@ -204,7 +186,6 @@
         }
         searchForm(dataset_option);
         getDropDownMenu(pwd, dataset_option);
-        console.log(pwd);
         curDir = pwd;
         document.getElementById("close").onclick = function() {
             filterSearch(pwd);
@@ -214,23 +195,18 @@
 
       function filterSearch(){
         let identifier = 'search';
-        console.log("inside create folder curDir variable:", curDir);
         var dataset_option = document.getElementById("dataset_name").value;
-        console.log("on filter dataset option is", dataset_option);
 
         if (dataset_option == "Stocks Data") {
             var stock_name = document.getElementById("stock_name").value;
             var method_name = document.getElementById("method_name").value;
             var attribute_name = document.getElementById("attribute_name").value;
             postRequestSearch(URL_search, curDir, identifier, stock_name, method_name, attribute_name).then(data => {
-                console.log("printing post stocks request data:", data);
                 var searchTable = document.getElementById("SearchTable");
                 searchTable.style.display = "block";
                 var data_list = new Array();
-                console.log(typeof(data));
                 for (const x of data) {
-                    console.log(x);
-                    // column_values = x.split(" ");
+
                     data_list.push(x);
                 }
                 GenerateTable(data_list);
@@ -243,11 +219,8 @@
             postRequestSearch(URL_search, curDir, identifier, state_name, method_house_name).then(data => {
                 var searchTable = document.getElementById("SearchTable1");
                 searchTable.style.display = "block";
-                console.log("printing post house request data:", data);
                 var data_list = new Array();
-                console.log(typeof(data));
                 for (const x of data) {
-                    // column_values = x.split(" ");
                     data_list.push(x);
                 }
                 GenerateTable1(data_list);
@@ -291,8 +264,6 @@
         SearchTable.appendChild(tbody);
         SearchTable.classList.add("content-table");
         SearchTable.style.padding = '10px';
-
-        console.log("generated table"); 
     }
 
     
@@ -322,27 +293,18 @@
         SearchTable.innerHTML = "";
         SearchTable.appendChild(table);
         SearchTable.classList.add("content-table");
-        // SearchTable.style.textAlign = "center";
-        // SearchTable.style.marginLeft = "auto";
-        // SearchTable.style.marginRight = "auto";
         SearchTable.style.padding = '20px';
-        SearchTable.style.cellpadding = '20px';
-
-
-        console.log("generated table"); 
+        SearchTable.style.cellpadding = '20px'; 
     }
 
     function getDropDownMenu(pwd, dataset_option) {
         let identifier = "dropdown";
         console.log("path for dropdown pwd:", pwd);
         postRequest(URL_search, pwd, identifier).then(options => {
-            console.log("printing dropdown request data", options);
-            console.log("printing option")
             if (dataset_option == "Stocks Data") {
                 var stock_name_menus = generateDropdowns(options[0]);
                 var method_name_menus = generateDropdowns(options[1]);
                 var attribute_name_menus = generateDropdowns(options[2]);
-                console.log(stock_name_menus, method_name_menus, attribute_name_menus);
                 document.getElementById("stock_name").innerHTML = stock_name_menus;
                 document.getElementById("method_name").innerHTML = method_name_menus;
                 document.getElementById("attribute_name").innerHTML = attribute_name_menus;
@@ -350,7 +312,6 @@
             else if (dataset_option == "Housing Data") {
                 var state_name_menus = generateDropdowns(options[0]);
                 var method_name_house_menus = generateDropdowns(options[1]);
-                console.log(state_name_menus, method_name_house_menus);
                 document.getElementById("state_name").innerHTML = state_name_menus;
                 document.getElementById("method_name_house").innerHTML = method_name_house_menus;
             }
@@ -422,7 +383,6 @@
                 },
                 body: JSON.stringify(data),
         });
-        console.log('TEST', res, res.ok)
         if (res.ok) {
             let ret = await res.json();
             return ret.response;

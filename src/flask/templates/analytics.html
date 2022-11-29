@@ -102,8 +102,6 @@
         var attribute_option = document.getElementById("attribute_name").value;
         if (dataset_option != "Stocks Data") {
           postRequest(URL_analytics, dataset_option, identifier).then(data => {
-            console.log("printing graph related data:", data);
-            console.log(data[0]);
             getDropDownMenu(data[0]);
             document.getElementById("plot").style.display = "none";
             index = data[0].indexOf(attribute_option);
@@ -113,10 +111,7 @@
             google.charts.setOnLoadCallback(drawChart);
 
             function drawChart() {
-              console.log(dataset);
-              console.log(typeof(dataset));
               var data = google.visualization.arrayToDataTable(dataset);
-              console.log(data);
               var options = {
                 chart: {
                 title: 'Dataset Analysis',
@@ -142,7 +137,6 @@
       
       function getDropDownMenu(options) {
         var attribute_name_menus = generateDropdowns(options);
-        console.log(attribute_name_menus);
         document.getElementById("attribute_name").innerHTML = attribute_name_menus;
       }
 
