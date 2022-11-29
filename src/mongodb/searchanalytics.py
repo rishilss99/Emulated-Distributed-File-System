@@ -120,4 +120,4 @@ class SearchAnalytics:
             df_plot = df[df['Name'] == company]
             plt.plot(df_plot['date'], df_plot['close'])
             plt.title(company)
-            plt.savefig("test.png")
+            plt.savefig("./images/{0}.png".format(company))

@@ -119,9 +119,9 @@ def userInterface():
 
     return render_template("index.html")
 
-@app.route('/test.png')
-def get_dir():
-    return send_file('./test.png')
+@app.route('/images/<path>')
+def get_dir(path):
+    return send_file("images/"+path)
  
 if __name__=='__main__':
    app.run(debug=True) # host:localhost, port:5000

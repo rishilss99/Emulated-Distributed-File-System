@@ -16,9 +16,8 @@
 
     <button type="submit" name="choose" onclick="analyseDataset()" class="btn">Analyze</button>
     
-    <img src = "test.png" alt = "Test Image" />
+    <img src = "" id="plot" alt = "Test Image" hidden/>
     <div id="barchart_material" style="width: 900px; height: 4500px;"></div>
-    
 
     <style>
 
@@ -134,10 +133,9 @@
         }
         else {
           postRequest(URL_analytics, dataset_option, identifier, attribute_option).then(data => {
-            console.log("isudbvidufnvodfnfboidfobdnf");
-          })
-          console.log('deal with stocks data sepearately');
-          
+            document.getElementById("plot").src="./images/"+attribute_option+".png";
+            document.getElementById("plot").style.display = "block";
+          })  
         }
       }
       
